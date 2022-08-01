@@ -1,0 +1,223 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cub3d.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: idamouttou <marvin@42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/01/28 13:54:52 by idamoutto         #+#    #+#             */
+/*   Updated: 2021/01/28 13:56:04 by idamoutto        ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef _CUB3D_H
+# define _CUB3D_H
+
+# include <stdlib.h>
+# include <unistd.h>
+# include <stdio.h>
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <fcntl.h>
+# include <string.h>
+# include <math.h>
+# include "../minilibx-linux/mlx.h"
+
+# define ROTATE_LEFT	65361
+# define ROTATE_RIGHT	65363
+# define FORWARD_W_Z	119
+# define BACK_S_S		115
+# define RIGHT_D_D		100
+# define LEFT_A_Q		97
+# define BUFFER_SIZE	4096
+
+typedef struct		s_sprxy
+{
+	double			x;
+	double			y;
+}					t_sprxy;
+
+typedef struct		s_sprite
+{
+	int				nbspr;
+	int				*order;
+	double			*dist;
+	double			spritex;
+	double			spritey;
+	double			invdet;
+	double			transformx;
+	double			transformy;
+	int				spritescreenx;
+	int				spriteheight;
+	int				drawstartx;
+	int				drawstarty;
+	int				drawendy;
+	int				drawendx;
+	int				spritewidth;
+	double			*zbuffer;
+}					t_sprite;
+
+typedef struct		s_texture
+{
+	int				texdir;
+	double			wallx;
+	int				texx;
+	int				texy;
+	double			step;
+	double			texpos;
+}					t_texture;
+
+typedef struct		s_rayon
+{
+	double			posx;
+	double			posy;
+	double			dirx;
+	double			diry;
+	double			planx;
+	double			plany;
+	double			rayondirx;
+	double			rayondiry;
+	double			camerax;
+	int				mapx;
+	int				mapy;
+	double			sidedistx;
+	double			sidedisty;
+	double			deltadistx;
+	double			deltadisty;
+
+	int				stepx;
+	int				stepy;
+	int				hit;
+	int				side;
+	double			perpwalldist;
+	int				lineheight;
+	int				drawstart;
+	int				drawend;
+	double			movespeed;
+	double			rotspeed;
+	int				x;
+	int				texture;
+}					t_rayon;
+
+typedef struct		s_data
+{
+	void			*mlx_ptr;
+	void			*mlx_win;
+	void			*img;
+	int				*addr;
+	int				bits_per_pixel;
+	int				line_length;
+	int				endian;
+	int				forward;
+	int				back;
+	int				left;
+	int				right;
+	int				rotate_left;
+	int				rotate_right;
+	int				minimapechelle;
+	int				width;
+	int				height;
+	void			*img2;
+	int				*addr2;
+}					t_data;
+
+typedef struct		s_param
+{
+	int				rx;
+	int				ry;
+	int				i;
+	int				f;
+	int				c;
+	char			*no;
+	char			*so;
+	char			*we;
+	char			*ea;
+	char			*sp;
+	int				nblines;
+	int				sizeline;
+	char			**map;
+	char			dep;
+	int				dx;
+	int				dy;
+	int				indi;
+	int				indi2;
+	int				indi3;
+	int				save;
+	int				screenx;
+	int				screeny;
+	int				erreur;
+	int				mulj;
+	int				lignevide;
+	int				insidemap;
+	int				count;
+	int				count2;
+	int				sum;
+	int				wrongcharmap;
+	t_data			texture[5];
+	t_data			data;
+	t_rayon			rayon;
+	t_texture		t;
+	t_sprite		s;
+	t_sprxy			*sxy;
+}					t_param;
+
+int					ft_cub(char *str, t_param *param);
+void				ft_parsing(char *fichier, t_param *param);
+int					ft_parsing_map(char *fichier, t_param *param);
+int					ft_strlen2(char *str);
+int					ft_charingstr(char *str, char c);
+int					ft_wall_util(char *str);
+int					ft_depart(char c, t_param *param, int i, int j);
+void				ft_color_resolution(char **str, t_param *param);
+int					ft_atoi2(const char *str, t_param *param);
+int					ft_atoi3(const char *str, t_param *param);
+void				ft_texture(char *str, t_param *param);
+int					ft_p_texture(char *str, char **texture,
+						t_param *param, int j);
+void				ft_initialisation(t_param *param);
+int					ft_wall(t_param *param);
+int					ft_is_map(char *str, t_param *param);
+void				ft_map(char *str, t_param *param);
+int					ft_copy_map(char *str, t_param *param);
+void				ft_initialisation_sprite(t_param *param);
+int					ft_ray(t_param *param);
+int					ft_mlx(t_param *param);
+int					ft_key_press(int keycode, t_param *param);
+int					ft_key_release(int keycode, t_param *param);
+int					ft_color_column(t_param *param);
+void				ft_draw_texture(t_param *param, int x, int y);
+void				ft_initialisation2(t_param *param);
+void				ft_initialisation3(t_param *param);
+void				ft_initialisation_texture(t_param *param);
+void				ft_initialisation_sprite2(t_param *param,
+								int i, int j, int v);
+void				ft_stepsidedist(t_param *param);
+void				ft_incrementrayon(t_param *param);
+void				ft_drawstartend(t_param *param);
+void				ft_swap(t_param *param);
+void				ft_forward_back(t_param *param);
+void				ft_left_right(t_param *param);
+void				ft_rotate_right_left(t_param *param);
+void				ft_errors(t_param *param, char *str);
+int					ft_exit(t_param *param);
+void				ft_verify_errors(t_param *param);
+void				ft_header(t_param *param, int fd);
+void				ft_save(t_param *param);
+void				ft_sprite(t_param *param);
+int					ft_minimap(t_param *param);
+void				ft_hitpoints(t_param *param);
+void				ft_initialisation_more(t_param *param);
+int					get_next_line(int fd, char **line, t_param *param);
+int					ft_strlen(char *str);
+char				*ft_strjoin(char *s1, char *s2);
+char				*ft_substr(char const *s, unsigned int start, size_t len);
+char				*ft_subbuff(char *buff, int start, int len);
+void				ft_initialisation_direction(t_param *param);
+void				ft_initialisation_more3(t_param *param);
+void				ft_rotate_left(t_param *param, double olddirx);
+void				ft_atoi3_check(const char *str, t_param *param);
+int					ft_lignevide(char *str);
+int					ft_check_save(char *str);
+int					ft_nb_virgule(const char *str);
+
+#endif
